@@ -85,8 +85,16 @@ export class PostgresAdapter implements Adapter {
         return this.repo.insertPolicy(ptype, rule);
     }
 
+    public addPolicies(sec: string, ptype: string, rules: string[][]): Promise<void> {
+        return this.repo.insertPolicies(rules.map(rule => ({ ptype, rule })));
+    }
+
     public removePolicy(sec: string, ptype: string, rule: string[]): Promise<void> {
         return this.repo.deletePolicies(ptype, rule);
+    }
+
+    public removePolicies(sec: string, ptype: string, rules: string[][]): Promise<void> {
+        return Promise.all(rules.map(rule => this.repo.deletePolicies(ptype, rule))) as any;
     }
 
     public removeFilteredPolicy(sec: string, ptype: string, fieldIndex: number, ...fieldValues: string[]): Promise<void> {
